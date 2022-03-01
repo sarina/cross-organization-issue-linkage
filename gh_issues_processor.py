@@ -1,16 +1,10 @@
 import requests
 
-import github as gh_api
-
 
 def get_github_headers(api_token):
     """
     Load GH personal access token from file.
     """
-    print("::set-output name=authenticating:: Authenticating.")
-    gh_api.Github(api_token)
-    print("::set-output name=authenticated:: Authenticated.")
-
     gh_headers = {"AUTHORIZATION": f"token {api_token}"}
     return gh_headers
 
