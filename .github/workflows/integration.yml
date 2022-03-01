@@ -16,4 +16,4 @@ jobs:
 
       - name: Check outputs
         run: |
-          test "${{ steps.selftest.outputs.linkedIssueInfo }}" =~ .*openedx.*"
+          echo "${{ steps.selftest.outputs.linkedIssueInfo }}" =~ .*openedx.*
