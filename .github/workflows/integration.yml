@@ -12,7 +12,7 @@ jobs:
         uses: sarina/cross-organization-issue-linkage@master
         with:
           API_TOKEN: ${{ secrets.API_TOKEN }}
-          ORGREPO: ${{ GITHUB_REPOSITORY }}
+          ORGREPO: GITHUB_REPOSITORY
 
       - name: Check outputs
         run: |
