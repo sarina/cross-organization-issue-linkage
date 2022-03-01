@@ -11,7 +11,7 @@ jobs:
         # Put your action repo here
         uses: sarina/cross-organization-issue-linkage@master
         with:
-          API_TOKEN: secrets.API_TOKEN
+          API_TOKEN: ${{ secrets.API_TOKEN }}
           ORGREPO: "sarina/cross-organization-issue-linkage"
 
       - name: Check outputs
