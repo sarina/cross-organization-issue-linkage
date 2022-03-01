@@ -19,11 +19,7 @@ def main():
     gh_headers = ghip.get_github_headers(api_token)
 
     for issue in ghip.get_open_issues(gh_headers, org, repo):
-        try:
-            iurl = issue["html_url"]
-        except:
-            data1 = type(issue)
-            raise MyException(data1, issue)
+        iurl = issue["html_url"]
         print(f"::set-output name=issueChecking::{iurl}")
 
         linked_issue_info = ghip.get_linked_info(issue)
@@ -36,16 +32,6 @@ def main():
 
             if linked_status == "closed":
                 ghip.close_issue(gh_headers, issue)
-
-
-class MyException(Exception):
-
-    def __init__(self, data1, data2):
-        self.data1 = data1
-        self.data2 = data2
-
-    def __str__(self):
-        return f"Got data1: {self.data1} and data2: {self.data2}"
 
 
 if __name__ == "__main__":

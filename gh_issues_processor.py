@@ -22,6 +22,7 @@ def get_open_issues(gh_headers, org, repo):
 
     while len(response) > 0:
         for issue in response:
+            raise MyException(response, issue)
             yield issue
         params["page"] += 1
         response = requests.get(
@@ -88,3 +89,13 @@ def close_issue(gh_headers, issue):
     response = requests.patch(issue_url, headers=gh_headers, json=params)
     rs = response.status_code
     print(f"::set-output name=Closed::Closed with status code {rs}")
+
+
+class MyException(Exception):
+
+    def __init__(self, data1, data2):
+        self.data1 = data1
+        self.data2 = data2
+
+    def __str__(self):
+        return f"Got data1: {self.data1} and data2: {self.data2}"
