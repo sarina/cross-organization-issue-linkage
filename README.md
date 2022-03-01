@@ -1,24 +1,36 @@
-# Python Container Action Template
-
-[![Action Template](https://img.shields.io/badge/Action%20Template-Python%20Container%20Action-blue.svg?colorA=24292e&colorB=0366d6&style=flat&longCache=true&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAM6wAADOsB5dZE0gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAERSURBVCiRhZG/SsMxFEZPfsVJ61jbxaF0cRQRcRJ9hlYn30IHN/+9iquDCOIsblIrOjqKgy5aKoJQj4O3EEtbPwhJbr6Te28CmdSKeqzeqr0YbfVIrTBKakvtOl5dtTkK+v4HfA9PEyBFCY9AGVgCBLaBp1jPAyfAJ/AAdIEG0dNAiyP7+K1qIfMdonZic6+WJoBJvQlvuwDqcXadUuqPA1NKAlexbRTAIMvMOCjTbMwl1LtI/6KWJ5Q6rT6Ht1MA58AX8Apcqqt5r2qhrgAXQC3CZ6i1+KMd9TRu3MvA3aH/fFPnBodb6oe6HM8+lYHrGdRXW8M9bMZtPXUji69lmf5Cmamq7quNLFZXD9Rq7v0Bpc1o/tp0fisAAAAASUVORK5CYII=)](https://github.com/jacobtomlinson/python-container-action)
-[![Actions Status](https://github.com/jacobtomlinson/python-container-action/workflows/Lint/badge.svg)](https://github.com/jacobtomlinson/python-container-action/actions)
-[![Actions Status](https://github.com/jacobtomlinson/python-container-action/workflows/Integration%20Test/badge.svg)](https://github.com/jacobtomlinson/python-container-action/actions)
-
-This is a template for creating GitHub actions and contains a small Python application which will be built into a minimal [Container Action](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-a-docker-container-action). Our final container from this template is ~50MB, yours may be a little bigger once you add some code. If you want something smaller check out my [go-container-action template](https://github.com/jacobtomlinson/go-container-action/actions).
-
-In `main.py` you will find a small example of accessing Action inputs and returning Action outputs. For more information on communicating with the workflow see the [development tools for GitHub Actions](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/development-tools-for-github-actions).
-
-> 🏁 To get started, click the `Use this template` button on this repository [which will create a new repository based on this template](https://github.blog/2019-06-06-generate-new-repositories-with-repository-templates/).
+# Cross organization issue linkage action
 
 ## Usage
 
-Describe how to use your action here.
+This is a simplistic action that allows you to link issues in your
+user- or org- repos to issues present outside of your user or org
+domain. The action is meant to be run on cron, and will simply sync
+your open issues with the other project's, closing your issues if
+the other project has closed its issue. If the other project has
+re-opened its issue, this script will not find them. Iterating
+over both opened and closed issues may be expensive for many repos.
+
+Potential future work may include:
+
+* Copying over comments from the other org's ticket to this one.
+* Making a comment on the other org's ticket if it is still open
+  while this one is closed (would possibly require a new action,
+  to be run on PR close)
+* Scripting over the beta API, so that project status changes are
+  reflected on both boards as well as open/close status
+
 
 ### Example workflow
 
+This workflow runs at minute 0 past every 2nd hour from 14
+through 23 on every day-of-week from Monday through Friday
+(GitHub runs on UTC, so these values work for EST)
+
 ```yaml
-name: My Workflow
-on: [push, pull_request]
+name: Sync Cross-Org Issues
+on:
+  schedule
+    - cron: '0 14/2 * * 1-5'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,60 +38,26 @@ jobs:
     - uses: actions/checkout@master
     - name: Run action
 
-      # Put your action repo here
-      uses: me/myaction@master
+      uses: sarina/cross-organization-issue-linkage@master
 
-      # Put an example of your mandatory inputs here
       with:
-        myInput: world
+        API_TOKEN: ${{ secrets.API_TOKEN }}
+        ORGREPO: ${{ github.repository }}
 ```
 
 ### Inputs
 
 | Input                                             | Description                                        |
 |------------------------------------------------------|-----------------------------------------------|
-| `myInput`  | An example mandatory input    |
-| `anotherInput` _(optional)_  | An example optional input    |
+| `API_TOKEN`  | A token with read/write access to this repository (can close issues) and public read access (to get status of the other org's issues)    |
+| `ORGREPO` | The org/repo where you are running the Action from. Present in the global envar `github.repository`    |
 
-### Outputs
+## Notes
 
-| Output                                             | Description                                        |
-|------------------------------------------------------|-----------------------------------------------|
-| `myOutput`  | An example output (returns 'Hello world')    |
+See [GitHub's cron
+documentation](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule)
+and/or [Crontab Guru](https://crontab.guru/) for help with cron syntax.
 
-## Examples
-
-> NOTE: People ❤️ cut and paste examples. Be generous with them!
-
-### Using the optional input
-
-This is how to use the optional input.
-
-```yaml
-with:
-  myInput: world
-  anotherInput: optional
-```
-
-### Using outputs
-
-Show people how to use your outputs in another action.
-
-```yaml
-steps:
-- uses: actions/checkout@master
-- name: Run action
-  id: myaction
-
-  # Put your action name here
-  uses: me/myaction@master
-
-  # Put an example of your mandatory arguments here
-  with:
-    myInput: world
-
-# Put an example of using your outputs here
-- name: Check outputs
-    run: |
-    echo "Outputs - ${{ steps.myaction.outputs.myOutput }}"
-```
+Note that the user, bot, or GitHub app who is associated with `API_TOKEN` will
+be the user displayed on the PR that closes it. If you use a bot/app, be sure it
+has an appropriate name that makes it clear what it is doing.
