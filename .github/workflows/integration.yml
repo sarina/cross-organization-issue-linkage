@@ -12,8 +12,8 @@ jobs:
         uses: sarina/cross-organization-issue-linkage@master
         with:
           API_TOKEN: ${{ secrets.API_TOKEN }}
-          ORGREPO: "sarina/cross-organization-issue-linkage"
+          ORGREPO: ${{ GITHUB_ACTION_REPOSITORY }}
 
       - name: Check outputs
         run: |
-          test "${{ steps.selftest.outputs.orgRepo }}" == "Hello world"
+          test "${{ steps.selftest.outputs.linkedIssueInfo }}" =~ .*openedx.*"

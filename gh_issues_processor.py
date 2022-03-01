@@ -70,7 +70,7 @@ def get_linked_status(gh_headers, linked_issue_info):
     """
     lorg, lrepo, lnum = linked_issue_info
     print(f"::set-output name=linkedIssueInfo::Found a \
-           ßlinked issue: {lorg} {lrepo} {lnum}")
+           linked issue: {lorg} {lrepo} {lnum}")
     issue_url = f"https://api.github.com/repos/{lorg}/{lrepo}/issues/{lnum}"
 
     response = requests.get(issue_url, headers=gh_headers).json()
