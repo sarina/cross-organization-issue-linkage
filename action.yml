@@ -7,7 +7,7 @@ inputs:
     description: "Token that allows access to the GitHub API"
     required: true
   ORGREPO:
-    description: "${{ GITHUB_ACTION_REPOSITORY }}"
+    description: "${{ GITHUB_REPOSITORY }}"
     required: true
 outputs:
   orgRepo:
