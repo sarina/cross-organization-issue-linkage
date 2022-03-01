@@ -1,12 +1,15 @@
-name: "Python Container Action Template"
-description: "Get started with Python Container actions"
-author: "Jacob Tomlinson"
+name: "Cross Organization Issue Linkage"
+description: "Syncs status of this repo's issues with that of issues in repos in
+any external org"
+author: "Sarina Canelake"
 inputs:
-  myInput:
-    description: "Input to use"
-    default: "world"
+  API_TOKEN:
+    description: "Token that allows access to the GitHub API"
+    required: true
+  ORGREPO:
+    description: "This repo, in `org/repo` form"
 outputs:
-  myOutput:
+  orgRepo:
     description: "Output from the action"
 runs:
   using: "docker"
