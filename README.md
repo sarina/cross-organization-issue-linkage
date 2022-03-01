@@ -1,5 +1,8 @@
 # Cross organization issue linkage action
 
+[![Actions Status](https://github.com/sarina/cross-organization-issue-linkage/workflows/Lint/badge.svg)](https://github.com/sarina/cross-organization-issue-linkage/actions)
+[![Actions Status](https://github.com/sarina/cross-organization-issue-linkage/workflows/Integration%20Test/badge.svg)](https://github.com/sarina/cross-organization-issue-linkage/actions)
+
 ## Usage
 
 This is a simplistic action that allows you to link issues in your
